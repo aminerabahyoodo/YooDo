@@ -10,10 +10,10 @@ const features = [
 
 function AnimatedFlow() {
   const nodes = [
-    { label: 'Société de Livraison', x: 20, y: 15, color: '#3b82f6' },
-    { label: 'Livreur Indépendant', x: 20, y: 75, color: '#06b6d4' },
-    { label: 'Point Relais YooDo', x: 50, y: 45, color: '#f97316' },
-    { label: 'Client Final', x: 80, y: 45, color: '#22c55e' },
+    { label: 'Société de\nLivraison', x: 20, y: 15, color: '#3b82f6' },
+    { label: 'Livreur\nIndépendant', x: 20, y: 75, color: '#06b6d4' },
+    { label: 'Point Relais\nYooDo', x: 50, y: 45, color: '#f97316' },
+    { label: 'Client\nFinal', x: 80, y: 45, color: '#22c55e' },
   ];
 
   const paths = [
@@ -63,36 +63,23 @@ function AnimatedFlow() {
             </g>
           );
         })}
-
-        {nodes.map((node, i) => (
-          <motion.circle
-            key={i}
-            cx={node.x}
-            cy={node.y}
-            r="2.5"
-            fill={node.color}
-            filter="url(#glow)"
-            animate={{ r: [2.5, 3.2, 2.5] }}
-            transition={{ repeat: Infinity, duration: 2, delay: i * 0.3 }}
-          />
-        ))}
       </svg>
 
-      {/* Labels - positioned to match SVG node coordinates exactly */}
+      {/* Labels positioned exactly on SVG node coordinates */}
       {nodes.map((n, i) => (
         <motion.div
           key={i}
-          className="absolute -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none"
+          className="absolute -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none z-10"
           style={{ left: `${n.x}%`, top: `${n.y}%` }}
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3 + i * 0.15 }}
         >
           <div
-            className="px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-[9px] sm:text-xs font-semibold backdrop-blur-sm border whitespace-pre-line leading-tight"
+            className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-semibold backdrop-blur-sm border whitespace-pre-line leading-tight"
             style={{ color: n.color, borderColor: `${n.color}40`, background: `${n.color}15` }}
           >
-            {n.label.replace(' ', '\n')}
+            {n.label}
           </div>
         </motion.div>
       ))}
