@@ -8,183 +8,82 @@ const features = [
   'Réseau collaboratif',
 ];
 
-function FlowNode({
-  label,
-  color,
-  delay = 0,
-}: {
-  label: string;
-  color: string;
-  delay?: number;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay, duration: 0.5 }}
-      className="px-3 py-2 sm:px-4 sm:py-3 rounded-xl border text-xs sm:text-sm font-semibold text-center whitespace-nowrap"
-      style={{
-        color,
-        borderColor: `${color}40`,
-        background: `${color}15`,
-      }}
-    >
-      {label}
-    </motion.div>
-  );
-}
-
-function AnimatedDot({ color, reverse = false }: { color: string; reverse?: boolean }) {
-  return (
-    <motion.div
-      className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full"
-      style={{
-        backgroundColor: color,
-        boxShadow: `0 0 10px ${color}`,
-      }}
-      animate={{ left: reverse ? ['78%', '0%'] : ['0%', '78%'] }}
-      transition={{
-        repeat: Infinity,
-        duration: 1.5,
-        ease: 'easeInOut',
-      }}
-    />
-  );
-}
-
-// Arrow going left → right
-function ArrowRight({ color, width = 'w-16' }: { color: string; width?: string }) {
-  return (
-    <div className={`relative ${width} h-4 flex items-center`}>
-      <div
-        className="absolute left-0 right-2 top-1/2 -translate-y-1/2 h-[1px]"
-        style={{ background: `linear-gradient(to right, ${color}90, ${color}20)` }}
-      />
-      <AnimatedDot color={color} />
-      <div className="absolute right-0 top-1/2 -translate-y-1/2" style={{ color }}>
-        <svg width="8" height="10" viewBox="0 0 8 10">
-          <path d="M0 0 L7 5 L0 10" fill="none" stroke="currentColor" strokeWidth="1.5" />
-        </svg>
-      </div>
-    </div>
-  );
-}
-
-// Diagonal SVG arrow for desktop (from a source node to the center relay)
-function DiagonalArrow({
-  color,
-  fromBottom = false,
-}: {
-  color: string;
-  fromBottom?: boolean;
-}) {
-  // Arrow goes from right side of left node to left side of center node
-  // fromBottom: arrow goes up-right; else down-right
-  const x1 = 0;
-  const y1 = fromBottom ? 0 : 60;
-  const x2 = 80;
-  const y2 = fromBottom ? 60 : 0;
-
-  return (
-    <svg
-      width="80"
-      height="60"
-      viewBox="0 0 80 60"
-      className="overflow-visible"
-      style={{ flexShrink: 0 }}
-    >
-      <defs>
-        <marker
-          id={`arrowhead-${color.replace('#', '')}`}
-          viewBox="0 0 10 10"
-          refX="8"
-          refY="5"
-          markerWidth="6"
-          markerHeight="6"
-          orient="auto-start-reverse"
-        >
-          <path
-            d="M2 1L8 5L2 9"
-            fill="none"
-            stroke={color}
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </marker>
-      </defs>
-      <line
-        x1={x1}
-        y1={y1}
-        x2={x2}
-        y2={y2}
-        stroke={color}
-        strokeWidth="1.5"
-        strokeOpacity="0.7"
-        markerEnd={`url(#arrowhead-${color.replace('#', '')})`}
-      />
-    </svg>
-  );
-}
-
 function AnimatedFlow() {
   return (
-    <div className="w-full flex flex-col gap-8 items-center">
+    <svg
+      viewBox="0 0 500 200"
+      width="100%"
+      xmlns="http://www.w3.org/2000/svg"
+      className="overflow-visible"
+    >
+      <defs>
+        <marker id="arr-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#f97316" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </marker>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#22c55e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </marker>
+      </defs>
 
-      {/* ── DESKTOP ── */}
-      <div className="hidden lg:flex items-center justify-center w-full gap-0">
+      {/* Société de Livraison — top-left */}
+      <rect x="2" y="20" width="148" height="36" rx="10" fill="#3b82f620" stroke="#3b82f640" strokeWidth="1" />
+      <text x="76" y="42" textAnchor="middle" dominantBaseline="central" fill="#3b82f6" fontSize="11" fontWeight="600" fontFamily="inherit">
+        Société de Livraison
+      </text>
 
-        {/* LEFT COLUMN: two source nodes stacked */}
-        <div className="flex flex-col gap-10 items-end">
-          <FlowNode label="Société de Livraison"  color="#3b82f6" delay={0.1} />
-          <FlowNode label="Livreur Indépendant"   color="#06b6d4" delay={0.2} />
-        </div>
+      {/* Livreur Indépendant — bottom-left */}
+      <rect x="2" y="144" width="148" height="36" rx="10" fill="#06b6d420" stroke="#06b6d440" strokeWidth="1" />
+      <text x="76" y="162" textAnchor="middle" dominantBaseline="central" fill="#06b6d4" fontSize="11" fontWeight="600" fontFamily="inherit">
+        Livreur Indépendant
+      </text>
 
-        {/* DIAGONAL ARROWS converging to center */}
-        <div className="flex flex-col justify-between" style={{ height: '96px', marginLeft: '8px', marginRight: '8px' }}>
-          {/* Top arrow: down-right toward relay */}
-          <DiagonalArrow color="#3b82f6" fromBottom={false} />
-          {/* Bottom arrow: up-right toward relay */}
-          <DiagonalArrow color="#06b6d4" fromBottom={true} />
-        </div>
+      {/* Point Relais YooDo — center */}
+      <rect x="176" y="82" width="148" height="36" rx="10" fill="#f9731620" stroke="#f9731640" strokeWidth="1" />
+      <text x="250" y="100" textAnchor="middle" dominantBaseline="central" fill="#f97316" fontSize="11" fontWeight="600" fontFamily="inherit">
+        Point Relais YooDo
+      </text>
 
-        {/* CENTER: Point Relais */}
-        <FlowNode label="Point Relais YooDo" color="#f97316" delay={0.4} />
+      {/* Client Final — right */}
+      <rect x="350" y="82" width="148" height="36" rx="10" fill="#22c55e20" stroke="#22c55e40" strokeWidth="1" />
+      <text x="424" y="100" textAnchor="middle" dominantBaseline="central" fill="#22c55e" fontSize="11" fontWeight="600" fontFamily="inherit">
+        Client Final
+      </text>
 
-        {/* ARROW right to client */}
-        <ArrowRight color="#22c55e" width="w-16" />
+      {/* Hidden paths for animateMotion */}
+      <path id="path-soc" d="M150 38 L174 94" fill="none" stroke="none" />
+      <path id="path-liv" d="M150 162 L174 106" fill="none" stroke="none" />
+      <path id="path-cli" d="M324 100 L348 100" fill="none" stroke="none" />
 
-        {/* CLIENT */}
-        <FlowNode label="Client Final" color="#22c55e" delay={0.6} />
-      </div>
+      {/* Arrow: Société → Point Relais */}
+      <line x1="150" y1="38" x2="175" y2="94" stroke="#f97316" strokeWidth="1.5" strokeOpacity="0.6" markerEnd="url(#arr-orange)" />
 
-      {/* ── MOBILE ── */}
-      <div className="flex lg:hidden flex-col items-center gap-5 w-full">
+      {/* Arrow: Livreur → Point Relais */}
+      <line x1="150" y1="162" x2="175" y2="106" stroke="#f97316" strokeWidth="1.5" strokeOpacity="0.6" markerEnd="url(#arr-orange)" />
 
-        {/* Société */}
-        <div className="flex items-center justify-center gap-2">
-          <FlowNode label="Société de Livraison" color="#3b82f6" delay={0.1} />
-          <ArrowRight color="#3b82f6" width="w-10" />
-        </div>
+      {/* Arrow: Point Relais → Client Final */}
+      <line x1="324" y1="100" x2="348" y2="100" stroke="#22c55e" strokeWidth="1.5" strokeOpacity="0.7" markerEnd="url(#arr-green)" />
 
-        {/* Livreur */}
-        <div className="flex items-center justify-center gap-2">
-          <FlowNode label="Livreur Indépendant" color="#06b6d4" delay={0.2} />
-          <ArrowRight color="#06b6d4" width="w-10" />
-        </div>
+      {/* Animated dot: Société → Relais */}
+      <circle r="3" fill="#f97316" fillOpacity="0.9">
+        <animateMotion dur="1.8s" repeatCount="indefinite">
+          <mpath xlinkHref="#path-soc" />
+        </animateMotion>
+      </circle>
 
-        {/* Point Relais */}
-        <FlowNode label="Point Relais YooDo" color="#f97316" delay={0.4} />
+      {/* Animated dot: Livreur → Relais */}
+      <circle r="3" fill="#06b6d4" fillOpacity="0.9">
+        <animateMotion dur="1.8s" repeatCount="indefinite" begin="0.6s">
+          <mpath xlinkHref="#path-liv" />
+        </animateMotion>
+      </circle>
 
-        {/* Down arrow */}
-        <div className="rotate-90">
-          <ArrowRight color="#22c55e" width="w-10" />
-        </div>
-
-        {/* Client */}
-        <FlowNode label="Client Final" color="#22c55e" delay={0.6} />
-      </div>
-    </div>
+      {/* Animated dot: Relais → Client */}
+      <circle r="3" fill="#22c55e" fillOpacity="0.9">
+        <animateMotion dur="1.2s" repeatCount="indefinite" begin="0.3s">
+          <mpath xlinkHref="#path-cli" />
+        </animateMotion>
+      </circle>
+    </svg>
   );
 }
 
@@ -199,7 +98,6 @@ export default function Solution() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,rgba(249,115,22,0.06),transparent)]" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
           {/* LEFT CONTENT */}
@@ -246,6 +144,7 @@ export default function Solution() {
             <div className="absolute inset-0 rounded-3xl bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(249,115,22,0.08),transparent)]" />
             <AnimatedFlow />
           </motion.div>
+
         </div>
       </div>
     </section>
