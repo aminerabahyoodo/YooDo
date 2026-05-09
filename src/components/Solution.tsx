@@ -78,17 +78,12 @@ function AnimatedFlow() {
         ))}
       </svg>
 
-      {/* Labels */}
-      {[
-        { label: 'Société de\nLivraison', x: '20%', y: '8%', color: '#3b82f6' },
-        { label: 'Livreur\nIndépendant', x: '20%', y: '78%', color: '#06b6d4' },
-        { label: 'Point Relais\nYooDo', x: '50%', y: '50%', color: '#f97316' },
-        { label: 'Client\nFinal', x: '80%', y: '50%', color: '#22c55e' },
-      ].map((n, i) => (
+      {/* Labels - positioned to match SVG node coordinates exactly */}
+      {nodes.map((n, i) => (
         <motion.div
           key={i}
           className="absolute -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none"
-          style={{ left: n.x, top: n.y }}
+          style={{ left: `${n.x}%`, top: `${n.y}%` }}
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3 + i * 0.15 }}
@@ -97,7 +92,7 @@ function AnimatedFlow() {
             className="px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-[9px] sm:text-xs font-semibold backdrop-blur-sm border whitespace-pre-line leading-tight"
             style={{ color: n.color, borderColor: `${n.color}40`, background: `${n.color}15` }}
           >
-            {n.label}
+            {n.label.replace(' ', '\n')}
           </div>
         </motion.div>
       ))}
