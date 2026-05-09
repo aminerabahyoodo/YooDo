@@ -39,13 +39,19 @@ function AnimatedFlow() {
           <marker id="arrowOrange" markerWidth="3" markerHeight="2" refX="2.5" refY="1" orient="auto">
             <path d="M 0 0 L 3 1 L 0 2 Z" fill="#f97316" />
           </marker>
+          <marker id="arrowGreen" markerWidth="3" markerHeight="2" refX="2.5" refY="1" orient="auto">
+            <path d="M 0 0 L 3 1 L 0 2 Z" fill="#22c55e" />
+          </marker>
         </defs>
 
         {paths.map((p, i) => {
           const from = nodes[p.from];
           const to = nodes[p.to];
-          const d = `M ${from.x} ${from.y} C ${(from.x + to.x) / 2} ${from.y}, ${(from.x + to.x) / 2} ${to.y}, ${to.x} ${to.y}`;
-          const arrowId = ['arrowBlue', 'arrowCyan', 'arrowOrange'][i];
+          const midX = (from.x + to.x) / 2;
+          const midY = (from.y + to.y) / 2;
+          const offsetY = from.y === to.y ? -8 : 0;
+          const d = `M ${from.x} ${from.y} C ${midX} ${from.y + offsetY}, ${midX} ${to.y + offsetY}, ${to.x} ${to.y}`;
+          const arrowId = ['arrowBlue', 'arrowCyan', 'arrowGreen'][i];
           return (
             <g key={i}>
               <path d={d} stroke={from.color} strokeWidth="0.4" fill="none" opacity="0.3" />
