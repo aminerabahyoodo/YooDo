@@ -76,7 +76,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-16 pt-8 border-t border-white/6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-white/25 text-xs">© 2024 YooDo. Tous droits réservés.</p>
+          <p className="text-white/25 text-xs">© 2026 YooDo. Tous droits réservés.</p>
           <div className="flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
             <span className="text-white/25 text-xs">Maroc</span>
