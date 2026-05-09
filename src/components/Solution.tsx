@@ -9,97 +9,98 @@ const features = [
 ];
 
 function AnimatedFlow() {
+  const nodes = [
+    { label: 'Société de Livraison', x: 20, y: 15, color: '#3b82f6' },
+    { label: 'Livreur Indépendant', x: 20, y: 75, color: '#06b6d4' },
+    { label: 'Point Relais YooDo', x: 50, y: 45, color: '#f97316' },
+    { label: 'Client Final', x: 80, y: 45, color: '#22c55e' },
+  ];
+
+  const paths = [
+    { from: 0, to: 2 },
+    { from: 1, to: 2 },
+    { from: 2, to: 3 },
+  ];
+
   return (
-    <div className="w-full">
-      {/* Desktop View */}
-      <div className="hidden lg:block relative h-96">
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <defs>
-            <filter id="glow">
-              <feGaussianBlur stdDeviation="1.5" result="blur" />
-              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-          </defs>
+    <div className="relative w-full h-64 sm:h-72 md:h-80 lg:h-96">
+      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="1.5" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+          <marker id="arrowBlue" markerWidth="3" markerHeight="2" refX="2.5" refY="1" orient="auto">
+            <path d="M 0 0 L 3 1 L 0 2 Z" fill="#3b82f6" />
+          </marker>
+          <marker id="arrowCyan" markerWidth="3" markerHeight="2" refX="2.5" refY="1" orient="auto">
+            <path d="M 0 0 L 3 1 L 0 2 Z" fill="#06b6d4" />
+          </marker>
+          <marker id="arrowOrange" markerWidth="3" markerHeight="2" refX="2.5" refY="1" orient="auto">
+            <path d="M 0 0 L 3 1 L 0 2 Z" fill="#f97316" />
+          </marker>
+        </defs>
 
-          <g>
-            <path d="M 20 15 C 35 15, 35 45, 50 45" stroke="#3b82f6" strokeWidth="0.4" fill="none" opacity="0.3" />
-            <motion.path d="M 20 15 C 35 15, 35 45, 50 45" stroke="#3b82f6" strokeWidth="0.8" fill="none" filter="url(#glow)" strokeDasharray="8 40" animate={{ strokeDashoffset: [-48, 0] }} transition={{ repeat: Infinity, duration: 2, ease: 'linear' }} />
-          </g>
+        {paths.map((p, i) => {
+          const from = nodes[p.from];
+          const to = nodes[p.to];
+          const d = `M ${from.x} ${from.y} C ${(from.x + to.x) / 2} ${from.y}, ${(from.x + to.x) / 2} ${to.y}, ${to.x} ${to.y}`;
+          const arrowId = ['arrowBlue', 'arrowCyan', 'arrowOrange'][i];
+          return (
+            <g key={i}>
+              <path d={d} stroke={from.color} strokeWidth="0.4" fill="none" opacity="0.3" />
+              <motion.path
+                d={d}
+                stroke={from.color}
+                strokeWidth="0.8"
+                fill="none"
+                filter="url(#glow)"
+                strokeDasharray="8 40"
+                markerEnd={`url(#${arrowId})`}
+                animate={{ strokeDashoffset: [-48, 0] }}
+                transition={{ repeat: Infinity, duration: 2 + i * 0.5, ease: 'linear', delay: i * 0.4 }}
+              />
+            </g>
+          );
+        })}
 
-          <g>
-            <path d="M 20 75 C 35 75, 35 45, 50 45" stroke="#06b6d4" strokeWidth="0.4" fill="none" opacity="0.3" />
-            <motion.path d="M 20 75 C 35 75, 35 45, 50 45" stroke="#06b6d4" strokeWidth="0.8" fill="none" filter="url(#glow)" strokeDasharray="8 40" animate={{ strokeDashoffset: [-48, 0] }} transition={{ repeat: Infinity, duration: 2.5, ease: 'linear', delay: 0.4 }} />
-          </g>
-
-          <g>
-            <path d="M 50 45 C 65 45, 65 45, 80 45" stroke="#f97316" strokeWidth="0.4" fill="none" opacity="0.3" />
-            <motion.path d="M 50 45 C 65 45, 65 45, 80 45" stroke="#f97316" strokeWidth="0.8" fill="none" filter="url(#glow)" strokeDasharray="8 40" animate={{ strokeDashoffset: [-48, 0] }} transition={{ repeat: Infinity, duration: 3, ease: 'linear', delay: 0.8 }} />
-          </g>
-
-          {[
-            { x: 20, y: 15, r: 2.5, color: '#3b82f6', delay: 0 },
-            { x: 20, y: 75, r: 2.5, color: '#06b6d4', delay: 0.3 },
-            { x: 50, y: 45, r: 2.5, color: '#f97316', delay: 0.6 },
-            { x: 80, y: 45, r: 2.5, color: '#22c55e', delay: 0.9 },
-          ].map((node, i) => (
-            <motion.circle key={i} cx={node.x} cy={node.y} r={node.r} fill={node.color} filter="url(#glow)" animate={{ r: [2.5, 3.2, 2.5] }} transition={{ repeat: Infinity, duration: 2, delay: node.delay }} />
-          ))}
-        </svg>
-
-        {[
-          { label: 'Société de\nLivraison', x: '20%', y: '10%', color: '#3b82f6' },
-          { label: 'Livreur\nIndépendant', x: '20%', y: '80%', color: '#06b6d4' },
-          { label: 'Point Relais\nYooDo', x: '50%', y: '60%', color: '#f97316' },
-          { label: 'Client\nFinal', x: '80%', y: '60%', color: '#22c55e' },
-        ].map((n, i) => (
-          <motion.div
+        {nodes.map((node, i) => (
+          <motion.circle
             key={i}
-            className="absolute -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none"
-            style={{ left: n.x, top: n.y }}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 + i * 0.15 }}
-          >
-            <div
-              className="px-2.5 py-1 rounded-lg text-xs font-semibold backdrop-blur-sm border whitespace-pre-line leading-tight"
-              style={{ color: n.color, borderColor: `${n.color}40`, background: `${n.color}15` }}
-            >
-              {n.label}
-            </div>
-          </motion.div>
+            cx={node.x}
+            cy={node.y}
+            r="2.5"
+            fill={node.color}
+            filter="url(#glow)"
+            animate={{ r: [2.5, 3.2, 2.5] }}
+            transition={{ repeat: Infinity, duration: 2, delay: i * 0.3 }}
+          />
         ))}
-      </div>
+      </svg>
 
-      {/* Mobile View */}
-      <div className="lg:hidden space-y-4">
-        {[
-          { label: 'Société de Livraison', color: '#3b82f6', icon: '📦' },
-          { label: 'Livreur Indépendant', color: '#06b6d4', icon: '🚴' },
-          { label: 'Point Relais YooDo', color: '#f97316', icon: '📍' },
-          { label: 'Client Final', color: '#22c55e', icon: '👤' },
-        ].map((item, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 + i * 0.1 }}
-            className="flex items-center gap-3 p-3 rounded-xl border backdrop-blur-sm"
-            style={{ borderColor: `${item.color}40`, background: `${item.color}15` }}
+      {/* Labels */}
+      {[
+        { label: 'Société de\nLivraison', x: '20%', y: '8%', color: '#3b82f6' },
+        { label: 'Livreur\nIndépendant', x: '20%', y: '78%', color: '#06b6d4' },
+        { label: 'Point Relais\nYooDo', x: '50%', y: '50%', color: '#f97316' },
+        { label: 'Client\nFinal', x: '80%', y: '50%', color: '#22c55e' },
+      ].map((n, i) => (
+        <motion.div
+          key={i}
+          className="absolute -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none"
+          style={{ left: n.x, top: n.y }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3 + i * 0.15 }}
+        >
+          <div
+            className="px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-[9px] sm:text-xs font-semibold backdrop-blur-sm border whitespace-pre-line leading-tight"
+            style={{ color: n.color, borderColor: `${n.color}40`, background: `${n.color}15` }}
           >
-            <div className="text-2xl flex-shrink-0">{item.icon}</div>
-            <div className="flex-1">
-              <div className="text-sm font-semibold" style={{ color: item.color }}>
-                {item.label}
-              </div>
-              {i < 3 && (
-                <div className="text-xs mt-1 flex items-center gap-1" style={{ color: `${item.color}80` }}>
-                  <span>↓</span> Vers étape suivante
-                </div>
-              )}
-            </div>
-          </motion.div>
-        ))}
-      </div>
+            {n.label}
+          </div>
+        </motion.div>
+      ))}
     </div>
   );
 }
