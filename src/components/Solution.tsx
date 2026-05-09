@@ -22,7 +22,7 @@ function FlowNode({
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay, duration: 0.5 }}
-      className="px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border text-xs sm:text-sm font-semibold text-center whitespace-nowrap"
+      className="px-3 py-2 sm:px-4 sm:py-3 rounded-xl border text-xs sm:text-sm font-semibold text-center whitespace-nowrap"
       style={{
         color,
         borderColor: `${color}40`,
@@ -34,90 +34,20 @@ function FlowNode({
   );
 }
 
-function VerticalArrow({
+function ArrowToCenter({
   color,
-  delay = 0,
-  down = true,
+  reverse = false,
 }: {
   color: string;
-  delay?: number;
-  down?: boolean;
+  reverse?: boolean;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay }}
-      className="flex justify-center"
+    <div
+      className={`flex items-center ${
+        reverse ? 'flex-row-reverse' : ''
+      }`}
     >
-      <div className="relative w-2 h-12 sm:h-16 lg:h-20">
-        <div
-          className="absolute left-1/2 -translate-x-1/2 w-[1px] h-full"
-          style={{
-            background: `linear-gradient(${
-              down ? 'to bottom' : 'to top'
-            }, ${color}90, ${color}20)`,
-          }}
-        />
-
-        <motion.div
-          className="absolute left-1/2 -translate-x-1/2 w-2 h-2 rounded-full"
-          style={{
-            backgroundColor: color,
-            boxShadow: `0 0 10px ${color}`,
-          }}
-          animate={
-            down
-              ? { top: ['0%', '82%'] }
-              : { bottom: ['0%', '82%'] }
-          }
-          transition={{
-            repeat: Infinity,
-            duration: 1.6,
-            ease: 'easeInOut',
-          }}
-        />
-
-        <div
-          className={`absolute left-1/2 -translate-x-1/2 ${
-            down ? 'bottom-0' : 'top-0'
-          }`}
-          style={{ color }}
-        >
-          <svg
-            width="10"
-            height="8"
-            viewBox="0 0 10 8"
-            className={down ? '' : 'rotate-180'}
-          >
-            <path
-              d="M0 0 L5 7 L10 0"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            />
-          </svg>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-function HorizontalArrow({
-  color,
-  delay = 0,
-}: {
-  color: string;
-  delay?: number;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay }}
-      className="flex items-center justify-center"
-    >
-      <div className="relative w-10 sm:w-16 lg:w-20 h-4">
+      <div className="relative w-10 sm:w-16 md:w-20 h-4">
         <div
           className="absolute left-0 right-2 top-1/2 -translate-y-1/2 h-[1px]"
           style={{
@@ -153,75 +83,106 @@ function HorizontalArrow({
           </svg>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
 function AnimatedFlow() {
   return (
-    <div className="w-full flex flex-col items-center gap-5 sm:gap-7">
-      
-      {/* TOP NODE */}
-      <div className="flex justify-center">
+    <div className="w-full flex flex-col gap-8 items-center">
+
+      {/* DESKTOP */}
+      <div className="hidden lg:flex items-center justify-center w-full">
+
+        {/* LEFT SIDE */}
+        <div className="flex flex-col gap-12 items-end">
+
+          {/* Société */}
+          <div className="flex items-center">
+            <FlowNode
+              label="Société de Livraison"
+              color="#3b82f6"
+              delay={0.1}
+            />
+
+            <ArrowToCenter color="#3b82f6" />
+          </div>
+
+          {/* Livreur */}
+          <div className="flex items-center">
+            <FlowNode
+              label="Livreur Indépendant"
+              color="#06b6d4"
+              delay={0.2}
+            />
+
+            <ArrowToCenter color="#06b6d4" />
+          </div>
+        </div>
+
+        {/* CENTER */}
+        <div className="mx-6">
+          <FlowNode
+            label="Point Relais YooDo"
+            color="#f97316"
+            delay={0.4}
+          />
+        </div>
+
+        {/* RIGHT ARROW */}
+        <ArrowToCenter color="#22c55e" />
+
+        {/* CLIENT */}
         <FlowNode
-          label="Société de Livraison"
-          color="#3b82f6"
-          delay={0.1}
+          label="Client Final"
+          color="#22c55e"
+          delay={0.6}
         />
       </div>
 
-      {/* VERTICAL ARROW */}
-      <VerticalArrow
-        color="#3b82f6"
-        delay={0.3}
-        down={true}
-      />
+      {/* MOBILE */}
+      <div className="flex lg:hidden flex-col items-center gap-5 w-full">
 
-      {/* MAIN FLOW */}
-      <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-5 w-full">
-        
-        {/* LEFT NODE */}
-        <div className="order-2 lg:order-1">
+        {/* Société */}
+        <div className="flex items-center justify-center w-full">
+          <FlowNode
+            label="Société de Livraison"
+            color="#3b82f6"
+            delay={0.1}
+          />
+
+          <ArrowToCenter color="#3b82f6" />
+        </div>
+
+        {/* Livreur */}
+        <div className="flex items-center justify-center w-full">
           <FlowNode
             label="Livreur Indépendant"
             color="#06b6d4"
             delay={0.2}
           />
+
+          <ArrowToCenter color="#06b6d4" />
         </div>
 
-        {/* ARROW */}
-        <div className="order-3 lg:order-2 rotate-90 lg:rotate-0">
-          <HorizontalArrow
-            color="#06b6d4"
-            delay={0.4}
-          />
+        {/* Point relais */}
+        <FlowNode
+          label="Point Relais YooDo"
+          color="#f97316"
+          delay={0.4}
+        />
+
+        {/* Arrow */}
+        <div className="rotate-90">
+          <ArrowToCenter color="#22c55e" />
         </div>
 
-        {/* CENTER NODE */}
-        <div className="order-1 lg:order-3">
-          <FlowNode
-            label="Point Relais YooDo"
-            color="#f97316"
-            delay={0.5}
-          />
-        </div>
-
-        {/* ARROW */}
-        <div className="order-4">
-          <HorizontalArrow
-            color="#22c55e"
-            delay={0.6}
-          />
-        </div>
-
-        {/* RIGHT NODE */}
-        <div className="order-5">
-          <FlowNode
-            label="Client Final"
-            color="#22c55e"
-            delay={0.7}
-          />
-        </div>
+        {/* Client */}
+        <FlowNode
+          label="Client Final"
+          color="#22c55e"
+          delay={0.6}
+        />
       </div>
     </div>
   );
@@ -238,9 +199,9 @@ export default function Solution() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,rgba(249,115,22,0.06),transparent)]" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        
+
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-          
+
           {/* LEFT CONTENT */}
           <motion.div
             ref={ref}
